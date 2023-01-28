@@ -10,4 +10,12 @@ def test_parse_source():
     result = rss.parse_source(EXAMPLE_FEED)
     assert result.feed.title == "Liftoff News"
     assert len(result.entries) == 4
-    assert result.feed.dl_feed_id == "Liftoff News"
+    assert result.feed.dl_feed_id == "rss2sample.xml"
+    assert result.entries[0].get("dl_feed_id") == "rss2sample.xml"
+
+
+def test_bad_feed_raises_exception():
+    """Raise exception if bad data passed to parser."""
+
+    with pytest.raises(Exception) as e:
+        result = rss.parse_source("bad dog, no biscuit")
