@@ -1,6 +1,7 @@
 import feedparser
 import pprint
 from datetime import datetime
+from time import mktime, gmtime
 
 
 def parse_source(source):
@@ -22,17 +23,31 @@ def parse_source(source):
     feed_id = source
     parsed["feed"]["dl_feed_id"] = feed_id
 
-    parsed["feed"]["dl_checked"] = datetime.now()
+    parsed["feed"]["dl_checked"] = mktime(gmtime())
+
+    # convert dates
+    if "published_parsed" in parsed["feed"]:
+        parsed["feed"]["published_parsed"] = mktime(parsed["feed"]["published_parsed"])
+
+    if "updated_parsed" in parsed["feed"]:
+        parsed["feed"]["updated_parsed"] = mktime(parsed["feed"]["updated_parsed"])
 
     # add feed_id and source to entries
     for entry in parsed.entries:
         entry["dl_feed_id"] = feed_id
 
-        entry["dl_checked"] = datetime.now()
+        entry["dl_checked"] = mktime(gmtime())
+        entry["dl_read"] = False
+        entry["dl_keep"] = False
+        # convert dates
+        if "published_parsed" in entry:
+            entry["published_parsed"] = mktime(entry["published_parsed"])
+
+        if "updated_parsed" in entry:
+            entry["updated_parsed"] = mktime(entry["updated_parsed"])
 
     return parsed
 
 
 if __name__ == "__main__":
-    pprint.pprint(parse_source("rss2sample.xml").get("status"))
-    pprint.pprint(parse_source("http://www.example.com/").get("status"))
+    pprint.pprint(parse_source("rss2sample.xml").get("entries"))
