@@ -6,7 +6,7 @@ class BaseFilter:
     anything beyond adding a standard message to an item.
     """
 
-    def __init__(self, id, tag, message="", explanation="", field_list=None):
+    def __init__(self, id, tag, message="", explanation="", field_list=None, **kwargs):
         """Create a BaseFilter with some starting properties.
 
         Args:
@@ -20,6 +20,8 @@ class BaseFilter:
         self.tag = tag
         self.message = message
         self.explanation = explanation
+        self.type = "BaseFilter"
+        self.extras = kwargs
 
         if field_list:
             self.field_list = field_list
@@ -52,3 +54,27 @@ class BaseFilter:
 
         self.add_report_to_item(item, True)
         return item
+
+    def export_config(self):
+        config = dict(
+            id=self.id,
+            tag=self.tag,
+            message=self.message,
+            explanation=self.explanation,
+            type=self.type,
+        )
+
+        if self.extras:
+            config.update(self.extras)
+
+        return config
+
+
+if __name__ == "__main__":
+    filter_a = BaseFilter("hello", "yes")
+    test_output = filter_a.analyze({})
+    config_output = filter_a.export_config()
+    print(test_output)
+    print(config_output)
+    filter_b = BaseFilter(**config_output)
+    print(filter_b.id)
