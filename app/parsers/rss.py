@@ -2,6 +2,11 @@ import feedparser
 import pprint
 from datetime import datetime
 from time import mktime, gmtime
+import re
+
+
+def encode_id(id_string):
+    return re.sub(r"\W", "", id_string)
 
 
 def parse_source(source):
@@ -20,7 +25,7 @@ def parse_source(source):
         raise ValueError("invalid feed read")
 
     # add feed_ids to channel
-    feed_id = source
+    feed_id = encode_id(source)
     parsed["feed"]["dl_feed_id"] = feed_id
 
     parsed["feed"]["dl_checked"] = mktime(gmtime())

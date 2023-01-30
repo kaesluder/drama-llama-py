@@ -23,5 +23,5 @@ def test_get_entries_by_source():
     db = app.storage.Dl_db("/tmp/foo.json")
     db.create_tables()
     db.upsert_RSS(rss.parse_source(EXAMPLE_FEED))
-    results = db.get_entry_by_source(EXAMPLE_FEED)
+    results = db.get_entry_by_source(rss.encode_id(EXAMPLE_FEED))
     assert len(results) == 4
