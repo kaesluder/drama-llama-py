@@ -19,7 +19,6 @@ def hello():
 @app.route("/api/feeds", methods=["GET"])
 def list_all_feeds():
     try:
-        request_body = request.get_json()
         feed_list = feeds.all()
         return jsonify(feed_list)
 
