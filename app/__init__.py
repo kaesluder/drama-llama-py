@@ -1,8 +1,11 @@
 from flask import Flask, request, jsonify, make_response
+from flask_cors import CORS
+
 
 from .storage import Dl_db
 
 app = Flask(__name__)
+CORS(app)
 
 db = Dl_db("/tmp/test_db.json")
 feeds, entries, filters, preferences = db.create_tables()
