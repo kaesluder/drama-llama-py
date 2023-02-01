@@ -18,6 +18,10 @@ def hello():
 
 @app.route("/api/feeds", methods=["GET"])
 def list_all_feeds():
+    """Fetch a list of all feeds currently known by the backend.
+
+    Returns:
+    JSON: list of entry items in JSON format, or error message."""
     try:
         feed_list = feeds.all()
         return jsonify(feed_list)
@@ -28,13 +32,17 @@ def list_all_feeds():
         )
 
 
-@app.route("/api/entries", methods=["GET"])
-def list_all_entries_for_feed():
-    try:
-        # request_body = request.get_json()
-        feed_id = request.args["feed_id"]
+@app.route("/api/<feed_id>/entries", methods=["GET"])
+def list_all_entries_for_feed(feed_id):
+    """Fetch all the downloaded entries for a single feed.
 
-        test_source = "https%3A//rsshub.app/apnews/topics/apf-topnews"
+    Args:
+        feed_id (str): Feed ID extracted from URL.
+
+    Returns:
+        JSON: list of entry items in JSON format, or error message.
+    """
+    try:
         entry_list = db.get_entry_by_source(feed_id)
         # print(entry_list)
         return jsonify(entry_list)
