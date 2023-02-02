@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
+from .input_pipeline import pipeline
 
 
 from .storage import Dl_db
@@ -49,3 +50,14 @@ def list_all_entries_for_feed(feed_id):
 
     except:
         return make_response({"message": "Invalid data. Please snabble for card."}, 404)
+
+
+@app.route("/api/refresh", methods=["GET"])
+def request_refresh():
+
+    try:
+        pipeline()
+        return make_response({"message": "Databse successfully refreshed."})
+
+    except Exception as e:
+        return make_response({"message": "Something went wrong.", "exception": e}, 404)

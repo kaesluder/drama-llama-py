@@ -1,6 +1,6 @@
-from filters import BaseFilter
-from storage import Dl_db
-from parsers import rss
+from .filters import BaseFilter
+from .storage import Dl_db
+from .parsers import rss
 
 
 filter_map = {"BaseFilter": BaseFilter.BaseFilter}
