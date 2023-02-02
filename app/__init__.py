@@ -52,6 +52,16 @@ def list_all_entries_for_feed(feed_id):
         return make_response({"message": "Invalid data. Please snabble for card."}, 404)
 
 
+@app.route("/api/<feed_id>/read", methods=["PATCH"])
+def mark_feed_read(feed_id):
+    try:
+        print("mark_feed_read")
+        result = db.mark_feed_read(feed_id)
+        return make_response({"message": f"Messages for {feed_id} marked read"}, 200)
+    except Exception as e:
+        return make_response({"message": e})
+
+
 @app.route("/api/refresh", methods=["GET"])
 def request_refresh():
 

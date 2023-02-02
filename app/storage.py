@@ -31,6 +31,10 @@ class Dl_db:
         q = Query()
         return self.entries.search(q.dl_feed_id == source)
 
+    def mark_feed_read(self, source):
+        q = Query()
+        return self.entries.update({"dl_read": True}, q.dl_feed_id == source)
+
 
 if __name__ == "__main__":
     db = Dl_db("/tmp/Dl_db.json")
