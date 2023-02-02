@@ -11,7 +11,6 @@ test_filter = BaseFilter.BaseFilter("hello", "yes")
 filter_list = [test_filter]
 
 db = Dl_db("/tmp/test_db.json")
-feeds, entries, filters, preferences = db.create_tables()
 
 sources = [
     "https://rsshub.app/apnews/topics/apf-topnews",

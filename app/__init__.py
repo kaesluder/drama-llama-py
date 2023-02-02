@@ -9,7 +9,6 @@ app = Flask(__name__)
 CORS(app)
 
 db = Dl_db("/tmp/test_db.json")
-feeds, entries, filters, preferences = db.create_tables()
 
 
 @app.route("/")
