@@ -8,7 +8,7 @@ from .storage import Dl_db
 app = Flask(__name__)
 CORS(app)
 
-db = Dl_db("/tmp/test_db.json")
+DB_PATH = "/tmp/test_db.json"
 
 
 @app.route("/")
@@ -23,7 +23,9 @@ def list_all_feeds():
     Returns:
     JSON: list of entry items in JSON format, or error message."""
     try:
-        feed_list = feeds.all()
+        db = Dl_db(DB_PATH)
+        feed_list = db.feeds()
+        db.connection.close()
         return jsonify(feed_list)
 
     except:
@@ -43,8 +45,9 @@ def list_all_entries_for_feed(feed_id):
         JSON: list of entry items in JSON format, or error message.
     """
     try:
-        entry_list = db.get_entry_by_source(feed_id)
-        # print(entry_list)
+        db = Dl_db(DB_PATH)
+        entry_list = db.get_entries_by_feed_id(feed_id)
+        db.connection.close()
         return jsonify(entry_list)
 
     except:

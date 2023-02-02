@@ -50,7 +50,7 @@ class Dl_db:
         (id, source, title, published_parsed, json_data)
         values(?,?,?,?,?);"""
 
-        upsert_entry_sql = """insert or replace into entries
+        upsert_entry_sql = """insert or ignore into entries
         (id, feed_id, title, dl_read, summary, published_parsed, json_data)
         values(?,?,?,?,?,?,?);"""
 
@@ -81,7 +81,18 @@ class Dl_db:
 
         self.connection.commit()
 
-    def get_entry_by_source(self, source):
+    def feeds(self):
+        cursor = self.connection.cursor()
+        results = cursor.execute("select json_data from feeds;").fetchall()
+        return [json.loads(row["json_data"]) for row in results]
+
+    def get_entries_by_feed_id(self, source):
+        cursor = self.connection.cursor()
+        results = cursor.execute(
+            "select json_data from entries where feed_id = ?", [source]
+        )
+        return [json.loads(row["json_data"]) for row in results]
+
         q = Query()
         return self.entries.search(q.dl_feed_id == source)
 
