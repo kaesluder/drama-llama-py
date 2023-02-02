@@ -59,7 +59,7 @@ def mark_feed_read(feed_id):
         result = db.mark_feed_read(feed_id)
         return make_response({"message": f"Messages for {feed_id} marked read"}, 200)
     except Exception as e:
-        return make_response({"message": e})
+        return make_response({"message": str(e)})
 
 
 @app.route("/api/refresh", methods=["GET"])
@@ -70,4 +70,6 @@ def request_refresh():
         return make_response({"message": "Databse successfully refreshed."})
 
     except Exception as e:
-        return make_response({"message": "Something went wrong.", "exception": e}, 404)
+        return make_response(
+            {"message": "Something went wrong.", "exception": str(e)}, 404
+        )
