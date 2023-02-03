@@ -8,8 +8,7 @@ from .storage import Dl_db
 app = Flask(__name__)
 CORS(app)
 
-db = Dl_db("/tmp/test_db.json")
-feeds, entries, filters, preferences = db.create_tables()
+DB_PATH = "/tmp/test_db.db"
 
 
 @app.route("/")
@@ -24,7 +23,9 @@ def list_all_feeds():
     Returns:
     JSON: list of entry items in JSON format, or error message."""
     try:
-        feed_list = feeds.all()
+        db = Dl_db(DB_PATH)
+        feed_list = db.feeds()
+        db.connection.close()
         return jsonify(feed_list)
 
     except:
@@ -44,8 +45,9 @@ def list_all_entries_for_feed(feed_id):
         JSON: list of entry items in JSON format, or error message.
     """
     try:
-        entry_list = db.get_entry_by_source(feed_id)
-        # print(entry_list)
+        db = Dl_db(DB_PATH)
+        entry_list = db.get_entries_by_feed_id(feed_id)
+        db.connection.close()
         return jsonify(entry_list)
 
     except:
@@ -55,9 +57,13 @@ def list_all_entries_for_feed(feed_id):
 @app.route("/api/<feed_id>/read", methods=["PATCH"])
 def mark_feed_read(feed_id):
     try:
-        print("mark_feed_read")
-        result = db.mark_feed_read(feed_id)
-        return make_response({"message": f"Messages for {feed_id} marked read"}, 200)
+        db = Dl_db(DB_PATH)
+
+        print(f"mark_feed_read: {feed_id}")
+        db.mark_feed_read(feed_id)
+        db.connection.commit()
+        entry_list = db.get_entries_by_feed_id(feed_id)
+        return jsonify(entry_list)
     except Exception as e:
         return make_response({"message": str(e)})
 
@@ -67,7 +73,7 @@ def request_refresh():
 
     try:
         pipeline()
-        return make_response({"message": "Databse successfully refreshed."})
+        return make_response({"message": "Database successfully refreshed."})
 
     except Exception as e:
         return make_response(

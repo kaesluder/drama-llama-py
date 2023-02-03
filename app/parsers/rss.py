@@ -24,6 +24,8 @@ def parse_source(source):
     if parsed.get("bozo", True):
         raise ValueError("invalid feed read")
 
+    parsed["feed"]["source"] = source
+
     # add feed_ids to channel
     feed_id = encode_id(source)
     parsed["feed"]["dl_feed_id"] = feed_id

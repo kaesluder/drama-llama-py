@@ -10,8 +10,6 @@ test_filter = BaseFilter.BaseFilter("hello", "yes")
 
 filter_list = [test_filter]
 
-db = Dl_db("/tmp/test_db.json")
-feeds, entries, filters, preferences = db.create_tables()
 
 sources = [
     "https://rsshub.app/apnews/topics/apf-topnews",
@@ -20,18 +18,19 @@ sources = [
     "https://killsixbilliondemons.com/feed/",
 ]
 
+DB_PATH = "/tmp/test_db.db"
+
 
 def pipeline():
     for source in sources:
+        db = Dl_db(DB_PATH)
         data = rss.parse_source(source)
         for filter in filter_list:
             for item in data["entries"]:
                 item = filter.analyze(item)
         db.upsert_RSS(data)
+        db.connection.close()
 
 
 if __name__ == "__main__":
     pipeline()
-    print(len(entries))
-    last_entry = db.entries.all()[1]
-    print(last_entry.get("filter_results"))
