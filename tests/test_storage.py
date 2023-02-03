@@ -36,3 +36,11 @@ def test_get_entries_by_feed_id():
     db.upsert_RSS(rss.parse_source(EXAMPLE_FEED))
     results = db.get_entries_by_feed_id(rss.encode_id(EXAMPLE_FEED))
     assert len(results) == 4
+
+
+def test_mark_read():
+    db = app.storage.Dl_db(TEST_DB)
+    db.upsert_RSS(rss.parse_source(EXAMPLE_FEED))
+    db.mark_feed_read(rss.encode_id(EXAMPLE_FEED))
+    results = db.get_entries_by_feed_id(rss.encode_id(EXAMPLE_FEED))
+    assert results[0]["dl_read"] == 1

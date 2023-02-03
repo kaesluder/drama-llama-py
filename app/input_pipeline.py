@@ -18,7 +18,7 @@ sources = [
     "https://killsixbilliondemons.com/feed/",
 ]
 
-DB_PATH = "/tmp/test_db.json"
+DB_PATH = "/tmp/test_db.db"
 
 
 def pipeline():

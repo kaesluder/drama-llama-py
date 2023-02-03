@@ -8,7 +8,7 @@ from .storage import Dl_db
 app = Flask(__name__)
 CORS(app)
 
-DB_PATH = "/tmp/test_db.json"
+DB_PATH = "/tmp/test_db.db"
 
 
 @app.route("/")
@@ -57,9 +57,13 @@ def list_all_entries_for_feed(feed_id):
 @app.route("/api/<feed_id>/read", methods=["PATCH"])
 def mark_feed_read(feed_id):
     try:
-        print("mark_feed_read")
-        result = db.mark_feed_read(feed_id)
-        return make_response({"message": f"Messages for {feed_id} marked read"}, 200)
+        db = Dl_db(DB_PATH)
+
+        print(f"mark_feed_read: {feed_id}")
+        db.mark_feed_read(feed_id)
+        db.connection.commit()
+        entry_list = db.get_entries_by_feed_id(feed_id)
+        return jsonify(entry_list)
     except Exception as e:
         return make_response({"message": str(e)})
 
@@ -69,7 +73,7 @@ def request_refresh():
 
     try:
         pipeline()
-        return make_response({"message": "Databse successfully refreshed."})
+        return make_response({"message": "Database successfully refreshed."})
 
     except Exception as e:
         return make_response(

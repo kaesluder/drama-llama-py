@@ -93,12 +93,22 @@ class Dl_db:
         )
         return [json.loads(row["json_data"]) for row in results]
 
-        q = Query()
-        return self.entries.search(q.dl_feed_id == source)
+    def mark_feed_read(self, feed_id):
+        """Mark all items in a feed as read by feed_id
 
-    def mark_feed_read(self, source):
-        q = Query()
-        return self.entries.update({"dl_read": True}, q.dl_feed_id == source)
+        Args:
+            feed_id (string): feed id
+        """
+        cursor = self.connection.cursor()
+
+        update_sql = """update entries
+        set json_data = json_set(json_data, '$.dl_read', True), 
+        dl_read = 1
+        where feed_id = (?)"""
+
+        cursor.execute(update_sql, [feed_id])
+        self.connection.commit()
+        cursor.close()
 
 
 if __name__ == "__main__":
