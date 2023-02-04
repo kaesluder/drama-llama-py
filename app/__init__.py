@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
 from .input_pipeline import pipeline, add_source
+import traceback
 
 
 from .storage import Dl_db
@@ -76,6 +77,7 @@ def request_refresh():
         return make_response({"message": "Database successfully refreshed."})
 
     except Exception as e:
+        traceback.print_exc()
         return make_response(
             {"message": "Something went wrong.", "exception": str(e)}, 404
         )

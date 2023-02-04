@@ -21,9 +21,22 @@ sources = [
 DB_PATH = "/tmp/test_db.db"
 
 
-def pipeline():
+def get_sources():
+    """Get all known sources in the database.
+
+    Returns:
+        [str]: list of source urls
+    """
     db = Dl_db(DB_PATH)
-    for source in sources:
+    results = [feed.get("source") for feed in db.feeds()]
+    db.connection.close()
+    return results
+
+
+def pipeline():
+    """Refreshes all feeds from database."""
+    db = Dl_db(DB_PATH)
+    for source in get_sources():
         data = rss.parse_source(source)
         for filter in filter_list:
             for item in data["entries"]:
@@ -33,6 +46,14 @@ def pipeline():
 
 
 def add_source(source):
+    """Add a feed to the database from a source URL.
+
+    Args:
+        source (string): URL string for a valid RSS object
+
+    Returns:
+        Boolean: True on success.
+    """
     db = Dl_db(DB_PATH)
 
     data = rss.parse_source(source)
