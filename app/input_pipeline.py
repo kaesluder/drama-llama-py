@@ -22,14 +22,25 @@ DB_PATH = "/tmp/test_db.db"
 
 
 def pipeline():
+    db = Dl_db(DB_PATH)
     for source in sources:
-        db = Dl_db(DB_PATH)
         data = rss.parse_source(source)
         for filter in filter_list:
             for item in data["entries"]:
                 item = filter.analyze(item)
         db.upsert_RSS(data)
-        db.connection.close()
+    db.connection.close()
+
+
+def add_source(source):
+    db = Dl_db(DB_PATH)
+
+    data = rss.parse_source(source)
+    for filter in filter_list:
+        for item in data["entries"]:
+            item = filter.analyze(item)
+    db.upsert_RSS(data)
+    return True
 
 
 if __name__ == "__main__":

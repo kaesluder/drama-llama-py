@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
-from .input_pipeline import pipeline
+from .input_pipeline import pipeline, add_source
 
 
 from .storage import Dl_db
@@ -74,6 +74,19 @@ def request_refresh():
     try:
         pipeline()
         return make_response({"message": "Database successfully refreshed."})
+
+    except Exception as e:
+        return make_response(
+            {"message": "Something went wrong.", "exception": str(e)}, 404
+        )
+
+
+@app.route("/api/feeds/add", methods=["POST"])
+def add_new_feed():
+    try:
+        request_body = request.get_json()
+        add_source(request_body["feed_source"])
+        return list_all_feeds()
 
     except Exception as e:
         return make_response(
