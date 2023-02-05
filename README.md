@@ -38,7 +38,7 @@ pip install -r requirements.txt
 flask run
 ```
 
-**You will also need the [python server](https://github.com/kaesluder/drama-llama-react)**. In a separate shell using [yarn](https://yarnpkg.com/):
+**You will also need the [react GUI](https://github.com/kaesluder/drama-llama-react)**. In a separate shell using [yarn](https://yarnpkg.com/):
 
 ```sh
 git clone https://github.com/kaesluder/drama-llama-react
