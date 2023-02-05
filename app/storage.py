@@ -182,6 +182,7 @@ class Dl_db:
         where id = (?)"""
 
         results = cursor.execute(delete_sql, [feed_id]).fetchone()
+        self.connection.commit()
         cursor.close()
         return results
 

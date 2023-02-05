@@ -94,3 +94,46 @@ def add_new_feed():
         return make_response(
             {"message": "Something went wrong.", "exception": str(e)}, 404
         )
+
+
+@app.route("/api/feeds/<feed_id>/predelete", methods=["GET"])
+def pre_delete_warning(feed_id):
+    """Returns the number of items that will be deleted along with a feed.
+
+    Args:
+        feed_id (str): text id of feed to delete
+
+    Returns:
+        JSON: json object with "feed_id" and "item_count" fields.
+    """
+    try:
+        db = Dl_db(DB_PATH)
+        result = db.pre_delete_feed(feed_id)
+        return make_response({"feed_id": feed_id, "item_count": result})
+    except Exception as e:
+        traceback.print_exc()
+        return make_response(
+            {"message": "Something went wrong.", "exception": str(e)}, 404
+        )
+
+
+@app.route("/api/feeds/<feed_id>/delete", methods=["DELETE"])
+def delete_feed(feed_id):
+    """Delete a feed and associated items from the database.
+
+    Args:
+        feed_id (str): text id of feed to delete
+
+    Returns:
+        JSON: json object with updated feed list.
+    """
+    try:
+        db = Dl_db(DB_PATH)
+        db.delete_feed(feed_id)
+        feed_list = db.feeds()
+        return make_response(feed_list)
+    except Exception as e:
+        traceback.print_exc()
+        return make_response(
+            {"message": "Something went wrong.", "exception": str(e)}, 404
+        )
