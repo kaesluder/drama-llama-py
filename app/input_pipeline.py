@@ -1,4 +1,4 @@
-from .filters import BaseFilter
+from .filters import BaseFilter, RegexFilter
 from .storage import Dl_db
 from .parsers import rss
 
@@ -6,9 +6,10 @@ from .parsers import rss
 filter_map = {"BaseFilter": BaseFilter.BaseFilter}
 
 test_filter = BaseFilter.BaseFilter("hello", "yes")
+regex_filter = RegexFilter.RegexFilter("test_regex", "Buddhist", regex=r"Buddhist")
 
 
-filter_list = [test_filter]
+filter_list = [test_filter, regex_filter]
 
 
 sources = [

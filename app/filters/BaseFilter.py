@@ -26,7 +26,7 @@ class BaseFilter:
         if field_list:
             self.field_list = field_list
         else:
-            self.field_list = ["description"]
+            self.field_list = ["summary"]
 
     def add_report_to_item(self, item, result):
         """Add a standardized report dict to item. Call within
