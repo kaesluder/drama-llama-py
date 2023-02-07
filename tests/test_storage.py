@@ -2,10 +2,26 @@ import app.storage
 import app.parsers.rss as rss
 import json
 import pprint
+import re
+from app.filters.BaseFilter import BaseFilter
+from app.filters.RegexFilter import RegexFilter
+
 
 EXAMPLE_FEED = "rss2sample.xml"
 
 TEST_DB = ":memory:"
+
+example_item = rss.parse_source(EXAMPLE_FEED)["entries"][0]
+base_test_filter = app.filters.BaseFilter.BaseFilter("hello world", "Yes!!")
+regex_test_filter = app.filters.RegexFilter.RegexFilter(
+    "hello regex",
+    "regexMatch",
+    "regexMatch",
+    "a test of regex filter",
+    None,
+    "regex",
+    test_extra="foo",
+)
 
 
 def test_db_connection():
@@ -71,3 +87,51 @@ def test_delete_feed():
     results = db.get_entries_by_feed_id(feed_id)
     assert len(results) == 0
     assert len(db.feeds()) == 0
+
+
+def test_add_filter():
+    db = app.storage.Dl_db(TEST_DB)
+    db.upsert_filter(base_test_filter)
+    db.upsert_filter(regex_test_filter)
+    cursor = db.connection.cursor()
+    filters = cursor.execute("select * from filters").fetchall()
+    assert len(filters) == 2
+
+    # check for expected fields
+    assert "id" in dict(filters[0])
+    assert "json_data" in dict(filters[0])
+
+
+def test_load_filters():
+    db = app.storage.Dl_db(TEST_DB)
+    db.upsert_filter(base_test_filter)
+    db.upsert_filter(regex_test_filter)
+    filter_objs = db.load_filters()
+    assert len(filter_objs) == 2
+    assert "hello world" in filter_objs
+    assert "hello regex" in filter_objs
+
+    # check for correct type field
+    assert filter_objs["hello world"].type == "BaseFilter"
+    assert filter_objs["hello regex"].type == "RegexFilter"
+
+    # check for correct python type
+    assert isinstance(filter_objs["hello world"], BaseFilter)
+    # check that the BaseFilter instance isn't a subclass
+    assert not isinstance(filter_objs["hello world"], RegexFilter)
+
+    # check for correct type on a RegexFilter
+    assert isinstance(filter_objs["hello regex"], RegexFilter)
+
+
+def test_delete_filter():
+    db = app.storage.Dl_db(TEST_DB)
+    db.upsert_filter(base_test_filter)
+    db.upsert_filter(regex_test_filter)
+
+    db.delete_filter("hello world")
+    filter_objs = db.load_filters()
+
+    assert len(filter_objs) == 1
+    assert "hello world" not in filter_objs
+    assert "hello regex" in filter_objs

@@ -2,6 +2,11 @@ from copy import deepcopy
 import sqlite3
 import json
 from app.parsers.rss import parse_source
+from app.filters.BaseFilter import BaseFilter
+from app.filters.RegexFilter import RegexFilter
+
+
+FILTERS_MAP = {"BaseFilter": BaseFilter, "RegexFilter": RegexFilter}
 
 
 class Dl_db:
@@ -50,8 +55,18 @@ class Dl_db:
             ON DELETE CASCADE
             );
             """
+
+        create_filters_table = """create table if not exists filters(
+            id text not null primary key,
+            json_data text
+            );"""
+
         cursor = self.connection.cursor()
-        for statement in [create_feeds_table, create_entries_table]:
+        for statement in [
+            create_feeds_table,
+            create_entries_table,
+            create_filters_table,
+        ]:
             cursor.execute(statement)
 
         self.connection.commit()
@@ -196,6 +211,44 @@ class Dl_db:
         self.connection.commit()
         cursor.close()
         return results
+
+    def upsert_filter(self, filterObj):
+        upsert_filter_sql = """insert or replace into filters 
+        (id, json_data)
+        values(?,?);"""
+        filter_id = filterObj.id
+        filter_json = json.dumps(filterObj.export_config())
+
+        cursor = self.connection.cursor()
+        cursor.execute(upsert_filter_sql, [filter_id, filter_json])
+
+        self.connection.commit()
+
+    def load_filters(self):
+        load_filter_sql = """select * from filters;"""
+
+        cursor = self.connection.cursor()
+        records = cursor.execute(load_filter_sql).fetchall()
+        configs = [json.loads(dict(r)["json_data"]) for r in records]
+        filter_objs = {}
+        for config in configs:
+            id = config["id"]
+            filter_type = config["type"]
+
+            # pulls the correct object constructor for filter_type
+            # from the FILTERS_MAP dict.
+            filter_objs[id] = FILTERS_MAP[filter_type](**config)
+
+        return filter_objs
+
+    def delete_filter(self, id):
+        delete_filter_sql = """
+            delete from filters 
+            where id = (?);"""
+
+        cursor = self.connection.cursor()
+        cursor.execute(delete_filter_sql, [id])
+        self.connection.commit()
 
 
 if __name__ == "__main__":
