@@ -12,13 +12,6 @@ regex_filter = RegexFilter.RegexFilter("test_regex", "Buddhist", regex=r"Buddhis
 filter_list = [test_filter, regex_filter]
 
 
-sources = [
-    "https://rsshub.app/apnews/topics/apf-topnews",
-    "https://www.them.us/feed/rss",
-    "https://www.youtube.com/feeds/videos.xml?channel_id=UCoxcjq-8xIDTYp3uz647V5A",
-    "https://killsixbilliondemons.com/feed/",
-]
-
 DB_PATH = "/tmp/test_db.db"
 
 

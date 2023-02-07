@@ -1,4 +1,3 @@
-from tinydb import TinyDB, Query
 from copy import deepcopy
 import sqlite3
 import json
@@ -20,9 +19,12 @@ class Dl_db:
         self.connection = sqlite3.connect(path)
         # return dicts mapping column name to column value
         self.connection.row_factory = sqlite3.Row
-        # turn foreign key constraints on to
-        # enable delete constraints.
-        self.connection.execute("PRAGMA foreign_keys = ON;")
+
+        # this seems to be incompatible with INSERT OR IGNORE
+        # self.connection.execute("PRAGMA foreign_keys = ON;")
+
+        # setting this explicitly is recommended by sqlite docs
+        self.connection.execute("PRAGMA foreign_keys = OFF;")
 
         create_feeds_table = """
         create table if not exists feeds( 
@@ -89,6 +91,8 @@ class Dl_db:
                 json.dumps(feed_info),
             ],
         )
+
+        cursor.connection.commit()
 
         for entry in entries:
             cursor.execute(
@@ -179,9 +183,16 @@ class Dl_db:
 
         delete_sql = """delete 
         from feeds 
-        where id = (?)"""
+        where id = (?);"""
+
+        # setting foreign_keys = OFF requires clearing
+        # feeds and entries separately.
+        delete_entries_sql = """delete
+        from entries
+        where feed_id = (?);"""
 
         results = cursor.execute(delete_sql, [feed_id]).fetchone()
+        results2 = cursor.execute(delete_entries_sql, [feed_id]).fetchone()
         self.connection.commit()
         cursor.close()
         return results
