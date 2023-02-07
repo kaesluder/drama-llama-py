@@ -34,6 +34,16 @@ class RegexFilter(BaseFilter.BaseFilter):
         else:
             item["filter_results"] = [report]
 
+    def export_config(self):
+        config = super().export_config()
+
+        config["regex"] = self.regex
+
+        if self.extras:
+            config.update(self.extras)
+
+        return config
+
     def analyze(self, item):
 
         results = []
