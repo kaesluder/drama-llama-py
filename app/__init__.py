@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
 from .input_pipeline import pipeline, add_source
 import traceback
+import json
 
 
 from .storage import Dl_db
@@ -134,6 +135,48 @@ def delete_feed(feed_id):
         return make_response(feed_list)
     except Exception as e:
         traceback.print_exc()
+        return make_response(
+            {"message": "Something went wrong.", "exception": str(e)}, 404
+        )
+
+
+@app.route("/api/filters/add", methods=["POST"])
+def add_filter():
+    try:
+        db = Dl_db(DB_PATH)
+        request_body = request.get_json()
+        db.add_filter(request_body)
+        filters = db.load_filters()
+        return make_response([f.export_config() for f in filters.values()], 201)
+
+    except Exception as e:
+        return make_response(
+            {"message": "Something went wrong.", "exception": str(e)}, 404
+        )
+
+
+@app.route("/api/filters", methods=["GET"])
+def get_filters():
+    try:
+        db = Dl_db(DB_PATH)
+        filters = db.load_filters()
+        return make_response([f.export_config() for f in filters.values()], 200)
+
+    except Exception as e:
+        return make_response(
+            {"message": "Something went wrong.", "exception": str(e)}, 404
+        )
+
+
+@app.route("/api/filters/<filter_id>/delete", methods=["DELETE"])
+def delete_filter(filter_id):
+    try:
+        db = Dl_db(DB_PATH)
+        db.delete_filter(filter_id)
+        filters = db.load_filters()
+        return make_response([f.export_config() for f in filters.values()], 200)
+
+    except Exception as e:
         return make_response(
             {"message": "Something went wrong.", "exception": str(e)}, 404
         )

@@ -212,6 +212,19 @@ class Dl_db:
         cursor.close()
         return results
 
+    def add_filter(self, json_dict):
+        upsert_filter_sql = """insert or replace into filters 
+        (id, json_data)
+        values(?,?);"""
+
+        filter_id = json_dict["id"]
+        print(filter_id)
+        filter_json = json.dumps(json_dict)
+        cursor = self.connection.cursor()
+        cursor.execute(upsert_filter_sql, [filter_id, filter_json])
+
+        self.connection.commit()
+
     def upsert_filter(self, filterObj):
         upsert_filter_sql = """insert or replace into filters 
         (id, json_data)
