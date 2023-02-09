@@ -131,3 +131,4 @@ dmypy.json
 .vscode/
 aquarium.db
 test.db
+gui/
