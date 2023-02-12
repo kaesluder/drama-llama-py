@@ -132,3 +132,4 @@ dmypy.json
 aquarium.db
 test.db
 gui/
+.DS_Store

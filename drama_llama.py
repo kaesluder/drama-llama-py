@@ -15,5 +15,5 @@ if __name__ == "__main__":
     # recipe from https://thewebdev.info/2022/04/03/how-to-start-a-python-flask-application-in-separate-thread/
     threading.Thread(target=lambda: app.run(debug=True, use_reloader=False)).start()
 
-    window = webview.create_window("Drama Llama!", "http://localhost:3000")
+    window = webview.create_window("Drama Llama!", path_to_dat, width=1200, height=900)
     webview.start()
