@@ -3,6 +3,7 @@ from flask_cors import CORS
 from .input_pipeline import pipeline, add_source
 import traceback
 import json
+import os
 
 
 from .storage import Dl_db
@@ -10,7 +11,7 @@ from .storage import Dl_db
 app = Flask(__name__)
 CORS(app)
 
-DB_PATH = "/tmp/test_db.db"
+DB_PATH = os.getenv("HOME") + "/test_db.db"
 
 
 @app.route("/")

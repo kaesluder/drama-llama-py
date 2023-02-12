@@ -1,6 +1,7 @@
 from .filters import BaseFilter, RegexFilter
 from .storage import Dl_db
 from .parsers import rss
+import os
 
 
 filter_map = {"BaseFilter": BaseFilter.BaseFilter}
@@ -12,7 +13,7 @@ regex_filter = RegexFilter.RegexFilter("test_regex", "Buddhist", regex=r"Buddhis
 filter_list = [test_filter, regex_filter]
 
 
-DB_PATH = "/tmp/test_db.db"
+DB_PATH = os.getenv("HOME") + "/test_db.db"
 
 
 def get_sources():
