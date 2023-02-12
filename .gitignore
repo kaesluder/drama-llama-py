@@ -133,3 +133,4 @@ aquarium.db
 test.db
 gui/
 .DS_Store
+gui-src/node_modules
