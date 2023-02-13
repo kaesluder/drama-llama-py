@@ -66,11 +66,14 @@ Developed using Python 3.10.9.
 
 ```
 feedparser
+pywebview
 Flask
 Flask-Cors
 pyinstaller
 pytest
 ```
+
+[Pywebview](https://pywebview.flowrl.com/) has its own system requirements for different operating systems.
 
 #### Javascript
 
