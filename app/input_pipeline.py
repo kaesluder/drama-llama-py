@@ -4,13 +4,10 @@ from .parsers import rss
 import os
 
 
-filter_map = {"BaseFilter": BaseFilter.BaseFilter}
-
-test_filter = BaseFilter.BaseFilter("hello", "yes")
-regex_filter = RegexFilter.RegexFilter("test_regex", "Buddhist", regex=r"Buddhist")
-
-
-filter_list = [test_filter, regex_filter]
+filter_map = {
+    "BaseFilter": BaseFilter.BaseFilter,
+    "RegexFilter": RegexFilter.RegexFilter,
+}
 
 
 DB_PATH = os.getenv("HOME") + "/test_db.db"
@@ -68,7 +65,8 @@ def add_source(source):
     db = Dl_db(DB_PATH)
 
     data = rss.parse_source(source)
-    for filter in filter_list:
+    filter_list = get_filters()
+    for filter in filter_list.values():
         for item in data["entries"]:
             item = filter.analyze(item)
     db.upsert_RSS(data)
