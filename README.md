@@ -23,7 +23,11 @@ This is my final project for [Ada Developers Academy](https://adadevelopersacade
 5.  Filter wizard
     - Drama Llama can suggest filters based on common patterns.
 
-This project is _not_ at all usable at this point. Currently it consists of a python back end (this repo) and a separate [react GUI](https://github.com/kaesluder/drama-llama-react) that will be integrated into a single desktop app eventually.
+This project is _not_ at all usable at this point. Currently it consists of a python back end (this repo) and a react front end.
+
+### Packages
+
+Latest packages for M1 Mac can be found under [releases](https://github.com/kaesluder/drama-llama-py/releases/tag/v0.2.0-alpha). The zip archive includes a MacOS .app bundle and a console launcher.
 
 ### Experimental Run Instructions
 
@@ -31,18 +35,49 @@ For bash or zsh:
 
 ```sh
 git clone https://github.com/kaesluder/drama-llama-py
+
+# Note: sparse downloads do not work.
+
 cd drama-llama-py
-python -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-flask run
+sh ./build.sh
+
+# build app bundle
+sh ./build-standalone.sh
+
+# run desktop app without a full build
+sh ./build.sh
+sh ./run-llama.sh
 ```
 
-**You will also need the [react GUI](https://github.com/kaesluder/drama-llama-react)**. In a separate shell using [yarn](https://yarnpkg.com/):
+If you want to run the GUI in a browser:
 
 ```sh
-git clone https://github.com/kaesluder/drama-llama-react
-cd drama-llama-react
-yarn
-yarn start # start the react interface on a simple web server.
+sh ./build.sh
+source venv/bin/activate
+flask run &
+open ./gui/index.html
+```
+
+### Dependencies
+
+#### Python
+
+Developed using Python 3.10.9.
+
+```
+feedparser
+Flask
+Flask-Cors
+pyinstaller
+pytest
+```
+
+#### Javascript
+
+```
+react (v. 18)
+axios
+material-ui
+luxon
+jest
 ```

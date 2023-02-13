@@ -27,6 +27,5 @@ pytest==7.2.1
 pywebview==4.0.1
 sgmllib3k==1.0.0
 six==1.16.0
-tinydb==4.7.1
 tomli==2.0.1
 Werkzeug==2.2.2
