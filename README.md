@@ -27,7 +27,7 @@ This project is _not_ at all usable at this point. Currently it consists of a py
 
 ### Packages
 
-Latest packages for M1 Mac can be found under [releases](https://github.com/kaesluder/drama-llama-py/releases/tag/v0.2.0-alpha). The zip archive includes a MacOS .app bundle and a console launcher.
+Latest packages for M1 Mac can be found under [releases](https://github.com/kaesluder/drama-llama-py/releases/tag/v0.2.0-alpha). The zip archive includes a MacOS .app bundle and a console launcher. Linux build scripts are a work in progress.
 
 ### Experimental Run Instructions
 
