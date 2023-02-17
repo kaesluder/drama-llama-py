@@ -84,3 +84,10 @@ material-ui
 luxon
 jest
 ```
+
+### Design Documents
+
+- [Proposal](docs/drama_llama_draft_2022-12-11.md)
+- [Capstone Presentation](docs/Ada_Capstone_Presentation.pdf)
+- [Resources and Bookmarks](docs/library_bookmarks.md)
+- [Early Wireframes](docs/Drama_Llama_Wireframes.pdf)
